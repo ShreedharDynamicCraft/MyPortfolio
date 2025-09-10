@@ -207,7 +207,7 @@ const Projects = () => {
       {/* Bottom Call-to-Action */}
       <div className="relative text-center mt-20 z-10">
         <a
-          href="https://github.com/Divyanshguptaj"
+          href="https://github.com/ShreedharDynamicCraft/CareerPilot"
           target="_blank"
           rel="noopener noreferrer"
           className="group relative px-10 py-4 bg-transparent border-none cursor-pointer inline-block"

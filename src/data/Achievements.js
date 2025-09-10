@@ -1,84 +1,55 @@
-import AhoubaCP from "../assets/Achievements/AhoubaCP.jpg";
-import InterIIITA from "../assets/Achievements/InterIIITA.jpg";
-import SIH2024 from "../assets/Achievements/SIH2024.jpg";
-import Voulenteer from "../assets/Achievements/Voulenteer.jpg";
-import { Trophy, Code, Target, Users } from "lucide-react";
-
+import { Trophy, Award, Code } from "lucide-react";
+import hacthon from "../assets/Achievements/HACTHON.jpeg";
+import rajyapuraskar from "../assets/Achievements/RAJYPURASHKAR.jpeg";
+import python from "../assets/Achievements/PYTHON TOPPER.jpg";
 const achievements = [
   {
     id: 1,
-    title: "Smart India Hackathon 2024",
-    issuer: "Government of India",
+    title: "Top Performer - NPTEL Python Course",
+    issuer: "NPTEL (All India Rank)",
     date: "2024",
-    category: "Hackathon",
+    category: "Certification",
     orientation: "landscape",
-    image: `${SIH2024}`,
+    image: python, // No image provided, can add certificate preview later
     description:
-      "Winner of Smart India Hackathon 2024 for developing innovative solutions to real-world problems.",
-    skills: [
-      "React.js",
-      "Node.js",
-      "Express.js",
-      "Real World Problem Solving",
-      "MongoDB",
-    ],
-    color: "from-purple-600 via-blue-600 to-cyan-500",
-    icon: Trophy,
-    achievement: "Winner",
+      "Recognized as a Top Performer in the NPTEL Python Course with an All India Rank.",
+    skills: ["Python", "Problem Solving", "Data Structures"],
+    color: "from-indigo-500 via-purple-500 to-pink-500",
+    icon: Award,
+    achievement: "Top Performer",
+    link: "https://drive.google.com/file/d/1DKVmj5nBCvOowF8MjnWdz4gemQtoZ4bw/view?usp=sharing",
   },
   {
     id: 2,
-    title: "Inter IIITA Sports Contest",
-    issuer: "IIIT Allahabad",
-    date: "2024",
-    category: "Sports",
-    orientation: "portrait",
-    image: `${InterIIITA}`,
+    title: "Bihar Governor's Award - Rajya Puraskar",
+    issuer: "Scout/Guide Examination",
+    date: "2022",
+    category: "Award",
+    orientation: "landscape",
+    image: rajyapuraskar,
     description:
-      "Secured 3rd place in the 4×100m relay, demonstrating teamwork, speed, and coordination.",
-    skills: ["Teamwork", "Speed", "Endurance", "Athletic Coordination"],
-    color: "from-emerald-500 via-teal-500 to-blue-500",
-    icon: Code,
-    achievement: "3rd Place",
+      "Awarded the Bihar Governor's Award for exceptional performance in the Scout/Guide Rajya Puraskar Examination.",
+    skills: ["Leadership", "Discipline", "Community Service"],
+    color: "from-green-500 via-emerald-500 to-teal-500",
+    icon: Trophy,
+    achievement: "Governor's Award",
+    link: "https://drive.google.com/file/d/12C-30j0F6oK3j0xyQ7Z8G3L9A4bjAj15/view?usp=sharing",
   },
   {
     id: 3,
-    title: "Ahouba Competitive Programming",
+    title: "Ahouba 2.0 Hackathon",
     issuer: "Ahouba Platform",
     date: "2024",
-    category: "Programming",
+    category: "Hackathon",
     orientation: "landscape",
-    image: `${AhoubaCP}`,
+    image: hacthon,
     description:
-      "Recognized for exceptional performance in competitive programming, consistently securing top positions on the Ahouba platform through strong analytical thinking and efficient coding practices.",
-    skills: [
-      "C++ Programming",
-      "Algorithm Design",
-      "Problem-Solving Strategies",
-    ],
+      "Secured 3rd Rank in Ahouba 2.0 Hackathon for a renewable energy project, winning ₹30,000.",
+    skills: ["Hackathon", "Innovation", "Renewable Energy"],
     color: "from-orange-500 via-red-500 to-pink-500",
-    icon: Target,
-    achievement: "Excellence",
-  },
-  {
-    id: 4,
-    title: "Volunteer Excellence Award",
-    issuer: "Community Service",
-    date: "2022",
-    category: "Service",
-    orientation: "landscape",
-    image: `${Voulenteer}`,
-    description:
-      "Recognition for outstanding volunteer service and community engagement initiatives.",
-    skills: [
-      "Leadership",
-      "Community Service",
-      "Team Management",
-      "Social Impact",
-    ],
-    color: "from-green-500 via-emerald-500 to-teal-500",
-    icon: Users,
-    achievement: "Recognition",
+    icon: Code,
+    achievement: "3rd Rank - ₹30,000 Prize",
+    link: "https://www.linkedin.com/posts/shreedhar-anand-23a699214_hackathon-innovation-renewableenergy-activity-7313134276105879553-SNy6",
   },
 ];
 

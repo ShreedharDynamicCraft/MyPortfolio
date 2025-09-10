@@ -5,7 +5,7 @@ const ContactSection = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleContactClick = () => {
-  const email = "luckys510039@gmail.com";
+  const email = "Shreedharanandji@gmail.com";
   const subject = "Excited to Connect with You!";
   const body = `
     Hi there,

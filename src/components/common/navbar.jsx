@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import links from '../../data/DownloadLinks'
 
-// Mock letterD image - replace with your actual import
-const LetterD = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23dbeafe'/%3E%3Ctext x='20' y='28' font-family='Arial' font-size='24' font-weight='bold' text-anchor='middle' fill='%231e40af'%3ED%3C/text%3E%3C/svg%3E";
+// Mock letterS image - replace with your actual import
+const LetterD = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23dbeafe'/%3E%3Ctext x='20' y='28' font-family='Arial' font-size='24' font-weight='bold' text-anchor='middle' fill='%231e40af'%3ES%3C/text%3E%3C/svg%3E";
+
 
 const Navbar = () => {
   const [activeItem, setActiveItem] = useState('');
@@ -151,10 +152,10 @@ const Navbar = () => {
             
             <span className="font-light relative overflow-hidden">
               <span className="block transition-transform duration-300 group-hover:translate-y-[-100%]">
-                Divyansh Gupta
+                Shreedhar Anand
               </span>
               <span className="absolute top-full left-0 block transition-transform duration-300 group-hover:translate-y-[-100%] bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent font-medium">
-                Divyansh Gupta
+                Shreedhar Anand
               </span>
             </span>
           </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import UserImage from "../../assets/HeroSection/UserImage.jpg";
+import UserImage from "../../assets/HeroSection/UserImage.jpeg";
 import SunHero from "../../assets/HeroSection/SunHero.png";
 import DotsHero from "../../assets/HeroSection/DotsHero.png";
 import WaveHero from "../../assets/HeroSection/WaveHero.png";
@@ -11,21 +11,25 @@ const HeroSection = () => {
       {/* Faded Background Text */}
       <div className="absolute inset-0 flex items-end justify-start pointer-events-none">
         <div className="text-2xl sm:text-3xl md:text-4xl xl:text-8xl font-bold text-gray-400 opacity-70 blur-sm select-none ml-2 sm:ml-4 mb-2 sm:mb-4">
-          Divyansh Gupta
+          Shreedhar Anand
         </div>
       </div>
 
       {/* Hero Left */}
       <div className="flex flex-col justify-center items-center lg:items-start gap-4 sm:gap-6 lg:gap-8 w-full lg:w-2/5 z-10 text-center lg:text-left px-2">
         <div className="text-2xl sm:text-3xl md:text-4xl xl:text-6xl text-[#343d38] font-medium leading-tight">
-          Divyansh Gupta
+          Shreedhar Anand
         </div>
         <div className="text-xl sm:text-2xl md:text-3xl xl:text-5xl leading-tight">
           I am a <span className="text-[#4e45d5]">Developer</span>
         </div>
-        <div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none">
-          I’m a passionate Software Developer specializing in building scalable web applications and crafting innovative digital solutions, showcasing my skills and projects that reflect my journey and expertise.
-        </div>
+<div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none">
+  I’m a Software Developer and Full-Stack Web Developer passionate about creating 
+  scalable web applications and exploring AI/ML solutions. I enjoy working across 
+  frontend, backend, and cloud to craft impactful digital experiences.
+</div>
+
+
         <button className="group relative px-6 sm:px-8 py-3 bg-transparent border-none cursor-pointer mt-2">
           <span className="relative z-10 text-gray-100 font-medium text-sm sm:text-base whitespace-nowrap">
             Hire Me
@@ -50,7 +54,7 @@ const HeroSection = () => {
             >
               <img
                 src={UserImage}
-                alt="Divyansh Gupta"
+                alt="Shreedhar Anand"
                 className="w-full h-full object-cover transition-all duration-1000 grayscale-0 hover:grayscale-1 hover:scale-105"
               />
               <div

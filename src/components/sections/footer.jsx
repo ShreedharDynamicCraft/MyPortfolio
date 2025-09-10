@@ -319,7 +319,7 @@ const FooterSection = () => {
             <div className="flex items-center space-x-2 text-black/60 text-sm">
               <span>© {new Date().getFullYear()} Made with</span>
               <Heart className="w-4 h-4 text-red-500 animate-pulse" />
-              <span>by Divyansh</span>
+              <span>by Shreedhar</span>
               <Coffee className="w-4 h-4 text-yellow-500" />
             </div>
 
