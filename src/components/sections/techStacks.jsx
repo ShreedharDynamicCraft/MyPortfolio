@@ -96,27 +96,44 @@ const TechStack = () => {
         onMouseLeave={() => setHoveredTech(null)}
       >
         <div className="relative">
-          {/* Icon container with gradient from tech data */}
+          {/* Enhanced icon container with 3D effects */}
           <div 
-            className={`relative bg-gradient-to-br ${tech.color} rounded-2xl p-2 sm:p-3 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-125 cursor-pointer border border-white/30`}
+            className={`relative bg-gradient-to-br ${tech.color} rounded-2xl p-3 sm:p-4 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-[1.3] hover:rotate-[5deg] cursor-pointer border border-white/40 transform-gpu`}
+            style={{
+              boxShadow: '0 8px 32px rgba(99, 102, 241, 0.2), 0 4px 16px rgba(139, 92, 246, 0.15)',
+              perspective: '1000px',
+              transformStyle: 'preserve-3d'
+            }}
           >
-            {/* Glass effect overlay */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/10 via-white/40 to-white/60 opacity-80"></div>
+            {/* Enhanced glass effect overlay */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/5 via-white/30 to-white/50 opacity-90 backdrop-blur-sm"></div>
             
-            {/* Subtle inner shadow */}
-            <div className="absolute inset-0 rounded-2xl shadow-inset"></div>
+            {/* Enhanced inner glow */}
+            <div className="absolute inset-0 rounded-2xl shadow-inner bg-gradient-to-br from-white/20 to-transparent"></div>
+            
+            {/* Animated border glow */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-30 transition-opacity duration-500 animate-pulse -z-10 blur-sm"></div>
             
             <img
               src={tech.icon}
               alt={tech.name}
-              className="relative z-10 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 object-contain filter drop-shadow-lg group-hover:drop-shadow-2xl transition-all duration-300"
+              className="relative z-10 w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain filter drop-shadow-xl group-hover:drop-shadow-2xl transition-all duration-500 group-hover:brightness-110"
+              style={{
+                transform: 'translateZ(10px)',
+                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3)) brightness(1.1) contrast(1.1)'
+              }}
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.nextSibling.style.display = 'flex';
               }}
             />
-            {/* Fallback for broken images */}
-            <div className="relative z-10 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xs sm:text-sm md:text-base hidden">
+            {/* Enhanced fallback for broken images */}
+            <div className="relative z-10 w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-sm sm:text-base md:text-lg hidden shadow-xl"
+              style={{
+                transform: 'translateZ(10px)',
+                boxShadow: '0 4px 16px rgba(99, 102, 241, 0.4)'
+              }}
+            >
               {tech.name.charAt(0)}
             </div>
             

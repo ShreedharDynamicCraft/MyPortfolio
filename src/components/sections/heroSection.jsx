@@ -28,19 +28,6 @@ const HeroSection = () => {
         scalable web applications and exploring <span className="font-bold">AI/ML</span> solutions. I enjoy working across 
         frontend, backend, and cloud to craft impactful digital experiences.
       </div>
-      <style jsx>{`
-        .animate-gradient-move {
-          background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #f0fdfa 100%);
-          background-size: 200% 200%;
-          animation: gradientMove 8s ease-in-out infinite;
-        }
-        @keyframes gradientMove {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}</style>
-
 
         <button
           className="group relative px-6 sm:px-8 py-3 bg-transparent border-none cursor-pointer mt-2"

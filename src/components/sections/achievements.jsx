@@ -47,38 +47,67 @@ const AchievementsSection = () => {
   return (
     <div
       id="achievements"
-      className="relative bg-blue-50 py-20 px-4 md:px-8 font-['Be_Vietnam_Pro'] overflow-hidden"
+      className="relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-20 px-4 md:px-8 overflow-hidden"
     >
-      {/* Faded Background Text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl xl:text-[12rem] font-bold text-gray-400 opacity-30 blur-[3px] select-none">
-          ACHIEVEMENTS
-        </div>
-      </div>
+      {/* Enhanced Background Elements */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
 
-      {/* Floating Decorative Elements */}
+      {/* Enhanced Floating Elements with 3D effects */}
       <div
-        className="absolute top-20 left-10 w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg opacity-20 animate-spin"
-        style={{ animationDuration: "6s" }}
+        className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl opacity-30 animate-spin shadow-2xl"
+        style={{ 
+          animationDuration: "8s", 
+          transform: 'perspective(1000px) rotateX(15deg) rotateY(15deg)',
+          filter: 'blur(0.5px) brightness(1.1)'
+        }}
       ></div>
       <div
-        className="absolute top-1/3 right-20 w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-25 animate-bounce"
-        style={{ animationDuration: "3s" }}
+        className="absolute top-1/3 right-20 w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-25 animate-bounce shadow-xl"
+        style={{ 
+          animationDuration: "4s",
+          transform: 'perspective(1000px) rotateX(20deg) rotateZ(10deg)',
+          filter: 'blur(0.5px) brightness(1.2)'
+        }}
       ></div>
-      <div className="absolute bottom-40 left-1/4 w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 transform rotate-45 opacity-20 animate-pulse"></div>
+      <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-gradient-to-r from-green-400 to-emerald-500 transform rotate-45 opacity-30 animate-pulse rounded-lg shadow-2xl"
+        style={{ 
+          transform: 'perspective(1000px) rotateX(25deg) rotateY(25deg) rotate(45deg)',
+          filter: 'blur(0.5px) brightness(1.15)'
+        }}
+      ></div>
       <div
-        className="absolute bottom-20 right-10 w-14 h-14 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-30 animate-bounce"
-        style={{ animationDelay: "1.5s" }}
+        className="absolute bottom-20 right-10 w-18 h-18 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-35 animate-bounce shadow-xl"
+        style={{ 
+          animationDelay: "2s",
+          transform: 'perspective(1000px) rotateX(30deg) rotateY(-15deg)',
+          filter: 'blur(0.5px) brightness(1.25)'
+        }}
       ></div>
 
       {/* Section Header */}
+            {/* Section Header with enhanced effects */}
       <div className="relative text-center mb-20 z-10">
-        <h2 className="text-4xl md:text-5xl lg:text-6xl text-[#4e45d5] font-bold mb-6 transform hover:scale-105 transition-transform duration-300">
-          My Achievements
-        </h2>
-        <div className="w-32 h-1 bg-gradient-to-r from-[#4e45d5] via-purple-500 to-pink-500 mx-auto rounded-full animate-pulse"></div>
-        <p className="text-lg md:text-xl text-[#343d38] mt-8 max-w-2xl mx-auto font-medium">
-          Milestones that define my journey of continuous learning
+        <div className="inline-block mb-8 relative">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6 transform hover:scale-110 hover:rotate-1 transition-all duration-700"
+            style={{ 
+              textShadow: '0 4px 20px rgba(99, 102, 241, 0.3)',
+              filter: 'drop-shadow(0 4px 12px rgba(139, 92, 246, 0.4))'
+            }}
+          >
+            Achievements
+          </h2>
+          <div className="w-40 h-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full animate-pulse shadow-xl"
+            style={{ 
+              boxShadow: '0 4px 20px rgba(99, 102, 241, 0.5), 0 8px 40px rgba(139, 92, 246, 0.3)'
+            }}
+          ></div>
+        </div>
+        <p className="text-xl md:text-2xl text-gray-700 mt-8 max-w-3xl mx-auto font-medium leading-relaxed animate-fade-in"
+          style={{ 
+            textShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}
+        >
+          Milestones and recognition that showcase my journey and dedication
         </p>
       </div>
 
@@ -91,9 +120,9 @@ const AchievementsSection = () => {
               imageOrientations[achievement.id] || "landscape";
 
             return (
-              <div
+                            <div
                 key={achievement.id}
-                className="group relative"
+                className="group relative cursor-pointer"
                 // onMouseEnter={() => setHoveredAchievement(achievement.id)}
                 // onMouseLeave={() => setHoveredAchievement(null)}
                 onClick={() => openModal(achievement)}
@@ -101,13 +130,25 @@ const AchievementsSection = () => {
                   animationDelay: `${index * 0.15}s`,
                 }}
               >
-                {/* Achievement Card with 3D Effect */}
-                <div className="relative perspective-1000 cursor-pointer h-full">
-                  <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden transform-gpu transition-all duration-700 hover:scale-105 hover:rotate-1 hover:shadow-2xl shadow-xl group-hover:shadow-[#4e45d5]/30 border border-white/60 h-full flex flex-col">
-                    {/* Gradient Background Overlay */}
+                {/* Achievement Card with enhanced 3D effects */}
+                <div className="relative perspective-1000">
+                  <div 
+                    className="relative bg-white/95 backdrop-blur-2xl rounded-3xl overflow-hidden transform-gpu transition-all duration-700 hover:scale-[1.05] hover:rotate-[1.5deg] hover:shadow-3xl shadow-2xl group-hover:shadow-indigo-500/30 border border-white/80"
+                    style={{
+                      boxShadow: '0 12px 50px rgba(99, 102, 241, 0.12), 0 4px 25px rgba(139, 92, 246, 0.08), 0 2px 12px rgba(0, 0, 0, 0.05)',
+                      transformStyle: 'preserve-3d'
+                    }}
+                  >
+                    {/* Enhanced gradient overlay */}
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${achievement.color} opacity-5 group-hover:opacity-15 transition-opacity duration-500`}
+                      className={`absolute inset-0 bg-gradient-to-br ${achievement.color} opacity-8 group-hover:opacity-15 transition-opacity duration-500`}
+                      style={{
+                        background: `linear-gradient(135deg, ${achievement.color && achievement.color.includes('blue') ? '#60a5fa20' : achievement.color && achievement.color.includes('purple') ? '#a78bfa20' : '#f472b620'} 0%, transparent 100%)`
+                      }}
                     ></div>
+
+                    {/* Animated border glow */}
+                    <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-25 transition-opacity duration-700 animate-pulse -z-10 blur-sm"></div>
 
                     {/* Animated Border */}
                     <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-[#4e45d5]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
