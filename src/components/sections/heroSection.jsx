@@ -23,14 +23,31 @@ const HeroSection = () => {
         <div className="text-xl sm:text-2xl md:text-3xl xl:text-5xl leading-tight">
           I am a <span className="text-[#4e45d5]">Developer</span>
         </div>
-<div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none">
-  I’m a Software Developer and Full-Stack Web Developer passionate about creating 
-  scalable web applications and exploring AI/ML solutions. I enjoy working across 
-  frontend, backend, and cloud to craft impactful digital experiences.
-</div>
+      <div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none animate-gradient-move rounded-2xl shadow-xl p-6 bg-white/80 backdrop-blur-xl border border-white/40 transform-gpu transition-all duration-700 hover:scale-[1.04] hover:rotate-[1.5deg]">
+        I’m a <span className="font-bold">Software Developer</span> and <span className="font-bold">Full-Stack Web Developer</span> passionate about creating 
+        scalable web applications and exploring <span className="font-bold">AI/ML</span> solutions. I enjoy working across 
+        frontend, backend, and cloud to craft impactful digital experiences.
+      </div>
+      <style jsx>{`
+        .animate-gradient-move {
+          background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #f0fdfa 100%);
+          background-size: 200% 200%;
+          animation: gradientMove 8s ease-in-out infinite;
+        }
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
 
 
-        <button className="group relative px-6 sm:px-8 py-3 bg-transparent border-none cursor-pointer mt-2">
+        <button
+          className="group relative px-6 sm:px-8 py-3 bg-transparent border-none cursor-pointer mt-2"
+          onClick={() => {
+            window.location.href = "mailto:Shreedharanandji@gmail.com?subject=Hire%20Me%20Inquiry&body=Hi%20Shreedhar,%20I%20would%20like%20to%20discuss%20a%20project%20opportunity.";
+          }}
+        >
           <span className="relative z-10 text-gray-100 font-medium text-sm sm:text-base whitespace-nowrap">
             Hire Me
           </span>

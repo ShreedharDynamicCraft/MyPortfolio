@@ -156,15 +156,26 @@ const Projects = () => {
                         <span
                           key={techIndex}
                           className="relative px-4 py-2 bg-gradient-to-r from-white to-gray-50 text-[#343d38] rounded-full text-xs md:text-sm font-semibold border border-gray-200 hover:border-[#4e45d5] transform hover:scale-110 hover:-translate-y-1 transition-all duration-300 cursor-pointer group/tech shadow-sm hover:shadow-lg"
-                          style={{
-                            animationDelay: `${techIndex * 0.1}s`,
-                          }}
+                          style={{ animationDelay: `${techIndex * 0.1}s` }}
                         >
                           {tech}
                           <div className="absolute inset-0 bg-gradient-to-r from-[#4e45d5] to-purple-500 rounded-full opacity-0 group-hover/tech:opacity-15 transition-opacity duration-300"></div>
                         </span>
                       ))}
                     </div>
+      {/* Enhanced Custom CSS for 3D and gradient effects */}
+      <style jsx>{`
+        .animate-gradient-move {
+          background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #f0fdfa 100%);
+          background-size: 200% 200%;
+          animation: gradientMove 8s ease-in-out infinite;
+        }
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
 
                     {/* Action Buttons for Mobile */}
                     <div className="flex gap-4 md:hidden">

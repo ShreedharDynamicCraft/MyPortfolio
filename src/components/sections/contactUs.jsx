@@ -73,7 +73,19 @@ const ContactSection = () => {
       {/* CTA Section */}
       <div className="relative text-center mt-10 z-10">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-10 shadow-xl border border-white/60">
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/60 animate-gradient-move transform-gpu transition-all duration-700 hover:scale-[1.04] hover:rotate-[1.5deg]">
+      <style jsx>{`
+        .animate-gradient-move {
+          background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #f0fdfa 100%);
+          background-size: 200% 200%;
+          animation: gradientMove 8s ease-in-out infinite;
+        }
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
             <div className="space-y-6">
               <div className="flex items-center justify-center space-x-2 mb-4">
                 <Heart className="w-6 h-6 text-red-500 animate-pulse" />
