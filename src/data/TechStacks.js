@@ -59,6 +59,13 @@ const techStacks = [
     color: "from-blue-50 to-blue-200",
   },
   {
+    id: 41,
+    name: "React Native",
+    category: "Frontend",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    color: "from-blue-400 to-cyan-600",
+  },
+  {
     id: 8,
     name: "Next.js",
     category: "Frontend",

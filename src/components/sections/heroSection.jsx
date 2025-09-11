@@ -23,11 +23,12 @@ const HeroSection = () => {
         <div className="text-xl sm:text-2xl md:text-3xl xl:text-5xl leading-tight">
           I am a <span className="text-[#4e45d5]">Developer</span>
         </div>
-      <div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none animate-gradient-move rounded-2xl shadow-xl p-6 bg-white/80 backdrop-blur-xl border border-white/40 transform-gpu transition-all duration-700 hover:scale-[1.04] hover:rotate-[1.5deg]">
-        I’m a <span className="font-bold">Software Developer</span> and <span className="font-bold">Full-Stack Web Developer</span> passionate about creating 
-        scalable web applications and exploring <span className="font-bold">AI/ML</span> solutions. I enjoy working across 
-        frontend, backend, and cloud to craft impactful digital experiences.
-      </div>
+        
+        <div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none animate-gradient-move rounded-2xl shadow-xl p-6 bg-white/80 backdrop-blur-xl border border-white/40 transform-gpu transition-all duration-700 hover:scale-[1.04] hover:rotate-[1.5deg]">
+          I'm a <span className="font-bold">Software Developer</span>, <span className="font-bold">App Developer</span>, and <span className="font-bold">Full-Stack Web Developer</span> passionate about creating 
+          scalable web applications and exploring <span className="font-bold">AI/ML</span> solutions. I enjoy working across 
+          frontend, backend, and cloud to craft impactful digital experiences.
+        </div>
 
         <button
           className="group relative px-6 sm:px-8 py-3 bg-transparent border-none cursor-pointer mt-2"
@@ -133,6 +134,25 @@ const HeroSection = () => {
             transform: translateY(-15px) translateX(10px);
           }
         }
+        
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+        
         @keyframes userImageFloat {
           0%, 100% {
             transform: scale(1) rotateY(0deg);
@@ -150,6 +170,7 @@ const HeroSection = () => {
             box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
           }
         }
+        
         @media (max-width: 640px) {
           @keyframes userImageFloat {
             0% {
