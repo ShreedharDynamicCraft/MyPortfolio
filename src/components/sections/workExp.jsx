@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import links from "../../data/DownloadLinks";
 
 const experiences = [
@@ -38,12 +38,11 @@ const experiences = [
 ];
 
 const WorkExperience = () => {
-  const [showResume, setShowResume] = useState(false);
   const handleViewResume = (e) => {
     e.preventDefault();
-    setShowResume(true);
+    // Open Google Drive link in a new tab
+    window.open(links.downloadCV, '_blank', 'noopener,noreferrer');
   };
-  const handleCloseResume = () => setShowResume(false);
   return (
     <div
       id="experience"
@@ -214,27 +213,6 @@ const WorkExperience = () => {
             <div className="absolute translate-x-3 translate-y-3 w-12 h-12 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 backdrop-blur-sm rounded-full transition-all duration-500 group-hover:rounded-xl group-hover:translate-x-0 group-hover:translate-y-0 group-hover:w-full group-hover:h-full -z-20"></div>
           </button>
         </div>
-        {/* Modal for viewing resume */}
-        {showResume && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-            <div className="relative bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 flex flex-col items-center">
-              <button
-                onClick={handleCloseResume}
-                className="absolute top-4 right-4 text-gray-700 hover:text-red-600 text-2xl font-bold"
-                aria-label="Close"
-              >
-                &times;
-              </button>
-              <h2 className="mb-4 text-xl font-bold text-indigo-700">Resume Preview</h2>
-              <iframe
-                src={links.downloadCV}
-                title="Resume PDF"
-                className="w-full h-[70vh] rounded-lg border"
-                style={{ minHeight: '400px' }}
-              ></iframe>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
