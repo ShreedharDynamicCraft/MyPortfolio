@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import UserImage from "../../assets/HeroSection/UserImage.jpeg";
 import SunHero from "../../assets/HeroSection/SunHero.png";
 import DotsHero from "../../assets/HeroSection/DotsHero.png";
@@ -6,6 +6,29 @@ import WaveHero from "../../assets/HeroSection/WaveHero.png";
 import CubeHero from "../../assets/HeroSection/CubeHero.png";
 
 const HeroSection = () => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showCursor, setShowCursor] = useState(true);
+  const targetText = "Software Developer";
+
+  useEffect(() => {
+    if (currentIndex < targetText.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + targetText[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, 120); // Typing speed
+      
+      return () => clearTimeout(timeout);
+    } else {
+      // Hide cursor after typing is complete
+      const cursorTimeout = setTimeout(() => {
+        setShowCursor(false);
+      }, 2000);
+      
+      return () => clearTimeout(cursorTimeout);
+    }
+  }, [currentIndex, targetText]);
+
   return (
     <div id="about" className="relative flex flex-col lg:flex-row justify-center items-center max-h-[80vh] px-4 md:px-8 gap-4 overflow-hidden pt-16 lg:pt-20">
       {/* Faded Background Text */}
@@ -21,7 +44,10 @@ const HeroSection = () => {
           Shreedhar Anand
         </div>
         <div className="text-xl sm:text-2xl md:text-3xl xl:text-5xl leading-tight">
-          I am a <span className="text-[#4e45d5]">Developer</span>
+          I am a <span className="text-[#4e45d5] font-bold typewriter-text">
+            {displayedText}
+            {showCursor && <span className="typewriter-cursor ml-1 text-[#4e45d5]">|</span>}
+          </span>
         </div>
         
         <div className="text-sm sm:text-base md:text-lg w-full lg:w-4/5 font-medium leading-relaxed max-w-md lg:max-w-none animate-gradient-move rounded-2xl shadow-xl p-6 bg-white/80 backdrop-blur-xl border border-white/40 transform-gpu transition-all duration-700 hover:scale-[1.04] hover:rotate-[1.5deg]">
@@ -186,6 +212,24 @@ const HeroSection = () => {
               filter: grayscale(0);
             }
           }
+        }
+        
+        .typewriter-cursor {
+          animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+        
+        .typewriter-text {
+          animation: fadeInChar 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeInChar {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>

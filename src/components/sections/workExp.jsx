@@ -59,14 +59,45 @@ const WorkExperience = () => {
         </p>
       </div>
 
-      {/* Experience Cards */}
+      {/* Experience Cards with Timeline */}
       <div className="relative max-w-6xl mx-auto">
+        {/* Floating Decorative Elements */}
+        <div className="absolute top-10 left-10 w-4 h-4 bg-[#4e45d5]/20 rounded-full animate-bounce"></div>
+        <div className="absolute top-32 right-12 w-6 h-6 bg-purple-500/20 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-20 left-16 w-3 h-3 bg-pink-500/20 rounded-full animate-ping"></div>
+        <div className="absolute bottom-40 right-8 w-5 h-5 bg-[#4e45d5]/20 rounded-full animate-bounce" style={{ animationDelay: '1s' }}></div>
+        
+        {/* Main Timeline Line */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-[#4e45d5] via-purple-500 to-pink-500 rounded-full shadow-lg z-0">
+          {/* Glowing effect */}
+          <div className="absolute inset-0 w-1 bg-gradient-to-b from-[#4e45d5] via-purple-500 to-pink-500 rounded-full blur-sm opacity-50"></div>
+          {/* Moving light effect */}
+          <div className="absolute top-0 left-0 w-1 h-8 bg-gradient-to-b from-white via-white/50 to-transparent rounded-full animate-pulse"></div>
+        </div>
+        
         <div className="grid gap-8 md:gap-12">
           {experiences.map((exp, index) => (
             <div key={exp.id} className="group relative">
-              <div className="relative perspective-1000">
+              {/* Timeline Node */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-20">
+                <div className="relative">
+                  {/* Hanging Thread */}
+                  <div className="hanging-thread absolute top-0 left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-gradient-to-b from-[#4e45d5] to-transparent"></div>
+                  {/* Main Node */}
+                  <div className={`timeline-node w-6 h-6 bg-gradient-to-br ${exp.gradient} rounded-full shadow-xl border-4 border-white transform group-hover:scale-125 transition-all duration-500 relative z-10`}>
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/30 to-transparent"></div>
+                  </div>
+                  {/* Pulsing Ring */}
+                  <div className={`absolute inset-0 w-6 h-6 bg-gradient-to-br ${exp.gradient} rounded-full animate-ping opacity-30`}></div>
+                  {/* Connecting Thread to Card */}
+                  <div className={`hanging-thread absolute top-6 ${index % 2 === 0 ? 'left-6' : 'right-6'} w-16 h-0.5 bg-gradient-to-r ${index % 2 === 0 ? 'from-[#4e45d5] to-transparent' : 'from-transparent to-[#4e45d5]'} transform ${index % 2 === 0 ? '' : 'rotate-180'}`}></div>
+                </div>
+              </div>
+              
+              {/* Card positioned alternately */}
+              <div className={`relative perspective-1000 ${index % 2 === 0 ? 'ml-8 md:ml-16 lg:ml-20' : 'mr-8 md:mr-16 lg:mr-20'}`}>
                 <div
-                  className="relative bg-white/90 backdrop-blur-2xl rounded-3xl overflow-hidden transform-gpu transition-all duration-700 hover:scale-[1.07] hover:rotate-[1.5deg] hover:shadow-3xl shadow-2xl group-hover:shadow-[#4e45d5]/30 border border-white/70"
+                  className={`relative bg-white/90 backdrop-blur-2xl rounded-3xl overflow-hidden transform-gpu transition-all duration-700 hover:scale-[1.07] ${index % 2 === 0 ? 'hover:rotate-[1.5deg]' : 'hover:rotate-[-1.5deg]'} hover:shadow-3xl shadow-2xl group-hover:shadow-[#4e45d5]/30 border border-white/70`}
                   style={{ boxShadow: '0 8px 32px 0 rgba(78,69,213,0.12), 0 1.5px 8px 0 rgba(78,69,213,0.08)' }}
                 >
                   {/* Animated Gradient Overlay */}
@@ -147,6 +178,31 @@ const WorkExperience = () => {
         .animate-gradient-move {
           background-size: 200% 200%;
           animation: gradientMove 6s ease-in-out infinite;
+        }
+        
+        .hanging-thread {
+          animation: threadSway 3s ease-in-out infinite;
+        }
+        
+        .timeline-node {
+          animation: nodePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes threadSway {
+          0%, 100% { transform: translateX(-1px) rotate(-0.5deg); }
+          50% { transform: translateX(1px) rotate(0.5deg); }
+        }
+        
+        @keyframes nodePulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(78, 69, 213, 0.7); }
+          70% { box-shadow: 0 0 0 10px rgba(78, 69, 213, 0); }
+        }
         }
         @keyframes gradientMove {
           0% { background-position: 0% 50%; }
