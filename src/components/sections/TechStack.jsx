@@ -37,6 +37,8 @@ function TechBubble({ items }) {
                 <img
                   src={tech.icon}
                   alt={tech.name}
+                  loading="lazy"
+                  decoding="async"
                   className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 object-contain"
                   onError={(e) => (e.currentTarget.style.visibility = 'hidden')}
                 />

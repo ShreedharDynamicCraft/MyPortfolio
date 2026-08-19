@@ -74,12 +74,14 @@ function ProfileEditor() {
         <TextField label="Location" value={p.location} onChange={(v) => setProfile({ location: v })} />
         <TextField label="Hero image URL" value={p.heroImage} onChange={(v) => setProfile({ heroImage: v })} />
         <Toggle label="Available for work" value={p.availableForWork} onChange={(v) => setProfile({ availableForWork: v })} />
+        <Toggle label="Show 'Download book' button (in Book view)" value={p.showBookDownload} onChange={(v) => setProfile({ showBookDownload: v })} />
       </div>
 
       <h3 className="text-lg font-bold text-ink mt-8 mb-4">Links</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Portfolio URL (hosted)" value={links.portfolio} onChange={(v) => setLinks({ portfolio: v })} />
         <TextField label="Resume URL" value={links.resume} onChange={(v) => setLinks({ resume: v })} />
+        <TextField label="Book PDF URL (Download book)" value={links.bookPdf} onChange={(v) => setLinks({ bookPdf: v })} />
         <TextField label="GitHub" value={links.github} onChange={(v) => setLinks({ github: v })} />
         <TextField label="LinkedIn" value={links.linkedin} onChange={(v) => setLinks({ linkedin: v })} />
         <TextField label="Twitter / X" value={links.twitter} onChange={(v) => setLinks({ twitter: v })} />

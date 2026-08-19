@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ExternalLink, Star } from 'lucide-react'
 import { useProfile } from '../lib/ProfileContext'
-import { useSeason } from '../lib/useSeason'
+import { getSeasonalTheme } from '../lib/theme'
 import Footer from '../components/layout/Footer'
 import { GithubIcon } from '../components/ui/BrandIcons'
 
@@ -58,7 +59,7 @@ function FullProjectCard({ project }) {
 
 export default function ProjectsPage() {
   const { data } = useProfile()
-  const { theme } = useSeason()
+  const [theme] = useState(() => getSeasonalTheme(new Date()))
   const { projects } = data
 
   return (

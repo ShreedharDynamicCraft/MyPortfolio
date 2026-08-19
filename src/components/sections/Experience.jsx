@@ -174,7 +174,7 @@ export default function Experience() {
                       onClick={() => setDoc({ url: src, title: `${edu.institution} — Convocation` })}
                       className="relative rounded-lg overflow-hidden border border-gray-200 group"
                     >
-                      <img src={src} alt="Convocation" loading="lazy" className="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={src} alt="Convocation" loading="lazy" className="w-full h-36 object-contain bg-stone-100 group-hover:scale-105 transition-transform duration-500" />
                       <span className="absolute inset-0 grid place-items-center bg-black/0 group-hover:bg-black/35 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
                         🎓 View
                       </span>

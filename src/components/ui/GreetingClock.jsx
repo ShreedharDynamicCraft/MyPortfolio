@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import { useSeason } from '../../lib/useSeason'
 import AnalogClock from './AnalogClock'
 
-export default function GreetingClock() {
+function GreetingClock() {
   const { now, greeting } = useSeason()
 
   const f = new Intl.DateTimeFormat('en-US', {
@@ -44,3 +45,5 @@ export default function GreetingClock() {
     </div>
   )
 }
+
+export default memo(GreetingClock)

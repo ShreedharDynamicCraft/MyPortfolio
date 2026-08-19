@@ -17,8 +17,8 @@ const SEASONS = [
 
 function within1Day(y, mo, d, fm, fd) {
   const today = Date.UTC(y, mo - 1, d)
-  const target = Date.UTC(y, fm - 1, fd)
-  return Math.abs(Math.round((target - today) / 86400000)) <= 1
+  const diff = (ty) => Math.abs(Math.round((Date.UTC(ty, fm - 1, fd) - today) / 86400000))
+  return diff(y) <= 1 || diff(y - 1) <= 1 || diff(y + 1) <= 1
 }
 
 export function getSeasonalTheme(now = new Date()) {

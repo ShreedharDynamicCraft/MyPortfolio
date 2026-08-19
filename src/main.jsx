@@ -6,6 +6,7 @@ import { ProfileProvider } from './lib/ProfileContext'
 import Portfolio from './pages/Portfolio'
 import ProjectsPage from './pages/ProjectsPage'
 import EditProfile from './pages/EditProfile'
+import BookPage from './pages/BookPage'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Portfolio />} />
+          <Route path="/book" element={<BookPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="*" element={<Portfolio />} />

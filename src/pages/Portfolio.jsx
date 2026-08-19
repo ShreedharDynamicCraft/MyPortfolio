@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { BookOpen } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
@@ -8,12 +9,10 @@ import Projects from '../components/sections/Projects'
 import TechStack from '../components/sections/TechStack'
 import Achievements from '../components/sections/Achievements'
 import Contact from '../components/sections/Contact'
-import BookMode from '../components/book/BookMode'
 import { getSeasonalTheme } from '../lib/theme'
 
 export default function Portfolio() {
   const [theme] = useState(() => getSeasonalTheme(new Date()))
-  const [book, setBook] = useState(false)
 
   return (
     <div className="min-h-screen overflow-x-hidden transition-[background] duration-1000" style={{ background: theme.bg }}>
@@ -37,15 +36,13 @@ export default function Portfolio() {
         <Footer />
       </div>
 
-      <button
-        onClick={() => setBook(true)}
+      <Link
+        to="/book"
         className="fixed bottom-8 left-8 z-50 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-brand to-purple-600 text-white font-semibold shadow-2xl hover:scale-105 transition-transform"
         aria-label="Open book view"
       >
         <BookOpen className="w-5 h-5" /> <span className="hidden sm:inline">Book view</span>
-      </button>
-
-      {book && <BookMode onClose={() => setBook(false)} />}
+      </Link>
     </div>
   )
 }

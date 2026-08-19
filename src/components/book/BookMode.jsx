@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { X, Volume2, VolumeX, ChevronLeft, ChevronRight, Mail, MapPin, FileText } from 'lucide-react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { X, Volume2, VolumeX, ChevronLeft, ChevronRight, Mail, MapPin, FileText, RotateCcw, Download } from 'lucide-react'
 import { useProfile } from '../../lib/ProfileContext'
 import { getIcon } from '../../lib/iconRegistry'
 import { istParts, getGreeting } from '../../lib/greeting'
@@ -65,6 +65,34 @@ const DECOR_POS = [
   { bottom: '20%', right: '7%' },
 ]
 const FLIP_MS = 700
+const FLIP_EASE = 'cubic-bezier(0.4, 0.05, 0.2, 1)'
+const BLOCK_GAP = 10
+
+const CORNER = `data:image/svg+xml,${encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><g fill='none' stroke='#c9a347' stroke-width='2.4'><path d='M6 66 C6 24 24 6 66 6'/><path d='M16 66 C16 30 30 16 66 16'/></g><g fill='#c9a347'><circle cx='14' cy='14' r='3.4'/><path d='M66 4 l3.2 6.4 -3.2 6.4 -3.2 -6.4 z'/><path d='M4 66 l6.4 3.2 6.4 -3.2 -6.4 -3.2 z'/></g></svg>"
+)}`
+
+function CoverCorners() {
+  const base = {
+    position: 'absolute',
+    width: 52,
+    height: 52,
+    backgroundImage: `url("${CORNER}")`,
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    opacity: 0.9,
+    pointerEvents: 'none',
+    zIndex: 3,
+  }
+  return (
+    <>
+      <span style={{ ...base, top: 12, left: 12 }} />
+      <span style={{ ...base, top: 12, right: 12, transform: 'scaleX(-1)' }} />
+      <span style={{ ...base, bottom: 12, left: 12, transform: 'scaleY(-1)' }} />
+      <span style={{ ...base, bottom: 12, right: 12, transform: 'scale(-1,-1)' }} />
+    </>
+  )
+}
 
 function chunk(a, n) {
   const out = []
@@ -81,9 +109,165 @@ const Skills = ({ list }) =>
 
 function Leaf({ idx, children }) {
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-5 sm:p-6">
       <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
       <div className="book-pagenum text-[11px] text-stone-400 text-center pt-2">— {idx + 1} —</div>
+    </div>
+  )
+}
+
+const ROPE_SEGMENTS = 18
+
+function BindingThread({ zIndex }) {
+  const boxRef = useRef(null)
+  const pathRef = useRef(null)
+  const path2Ref = useRef(null)
+  const beadRef = useRef(null)
+  const st = useRef({ pts: null, dragging: false, pin: null, H: 0, W: 44, seg: 0 })
+
+  useEffect(() => {
+    let raf
+    const N = ROPE_SEGMENTS
+    const grav = 0.6
+    const damp = 0.92
+    const iters = 20
+
+    const init = (w, h) => {
+      const ax = w / 2
+      const seg = (h - 8) / N
+      const pts = []
+      for (let i = 0; i <= N; i++) {
+        const y = 3 + seg * i
+        pts.push({ x: ax, y, px: ax, py: y })
+      }
+      st.current.pts = pts
+      st.current.seg = seg
+      st.current.H = h
+      st.current.W = w
+      st.current.pin = { x: ax, y: 3 + seg * N }
+    }
+
+    const tick = () => {
+      const box = boxRef.current
+      if (box) {
+        const w = box.clientWidth || 44
+        const h = box.clientHeight || 400
+        const s = st.current
+        if (!s.pts || Math.abs(h - s.H) > 2 || Math.abs(w - s.W) > 2) init(w, h)
+        const pts = s.pts
+        const ax = w / 2
+        const pinned = s.dragging && s.pin
+
+        for (let i = 1; i <= N; i++) {
+          const p = pts[i]
+          const vx = (p.x - p.px) * damp
+          const vy = (p.y - p.py) * damp
+          p.px = p.x
+          p.py = p.y
+          p.x += vx
+          p.y += vy + grav
+        }
+
+        for (let k = 0; k < iters; k++) {
+          pts[0].x = ax
+          pts[0].y = 3
+          if (pinned) {
+            pts[N].x = s.pin.x
+            pts[N].y = s.pin.y
+          }
+          for (let i = 0; i < N; i++) {
+            const a = pts[i]
+            const b = pts[i + 1]
+            const dx = b.x - a.x
+            const dy = b.y - a.y
+            const d = Math.hypot(dx, dy) || 0.0001
+            const diff = (d - s.seg) / d
+            const aPinned = i === 0
+            const bPinned = i + 1 === N && pinned
+            if (aPinned && bPinned) continue
+            if (aPinned) {
+              b.x -= dx * diff
+              b.y -= dy * diff
+            } else if (bPinned) {
+              a.x += dx * diff
+              a.y += dy * diff
+            } else {
+              a.x += dx * 0.5 * diff
+              a.y += dy * 0.5 * diff
+              b.x -= dx * 0.5 * diff
+              b.y -= dy * 0.5 * diff
+            }
+          }
+        }
+        pts[0].x = ax
+        pts[0].y = 3
+        if (pinned) {
+          pts[N].x = s.pin.x
+          pts[N].y = s.pin.y
+        }
+
+        let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`
+        for (let i = 1; i < N; i++) {
+          const xc = (pts[i].x + pts[i + 1].x) / 2
+          const yc = (pts[i].y + pts[i + 1].y) / 2
+          d += ` Q ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)} ${xc.toFixed(1)} ${yc.toFixed(1)}`
+        }
+        d += ` L ${pts[N].x.toFixed(1)} ${pts[N].y.toFixed(1)}`
+        pathRef.current?.setAttribute('d', d)
+        path2Ref.current?.setAttribute('d', d)
+        if (beadRef.current) {
+          beadRef.current.setAttribute('cx', pts[N].x.toFixed(1))
+          beadRef.current.setAttribute('cy', pts[N].y.toFixed(1))
+        }
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  const setPin = (e) => {
+    const r = boxRef.current.getBoundingClientRect()
+    if (st.current.pin) st.current.pin = { x: e.clientX - r.left, y: e.clientY - r.top }
+  }
+  const onDown = (e) => {
+    e.stopPropagation()
+    setPin(e)
+    st.current.dragging = true
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+  }
+  const onMove = (e) => {
+    if (!st.current.dragging) return
+    setPin(e)
+  }
+  const onUp = (e) => {
+    if (!st.current.dragging) return
+    st.current.dragging = false
+    e.currentTarget.releasePointerCapture?.(e.pointerId)
+  }
+
+  return (
+    <div
+      ref={boxRef}
+      className="absolute top-4 bottom-4 left-1/2 -translate-x-1/2"
+      style={{ zIndex, width: 44, touchAction: 'none', cursor: 'grab' }}
+      onPointerDown={onDown}
+      onPointerMove={onMove}
+      onPointerUp={onUp}
+      onPointerCancel={onUp}
+    >
+      <svg width="44" height="100%" style={{ overflow: 'visible', display: 'block' }}>
+        <defs>
+          <radialGradient id="beadGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#c98a4b" />
+            <stop offset="70%" stopColor="#7a4a22" />
+            <stop offset="100%" stopColor="#4a2810" />
+          </radialGradient>
+        </defs>
+        <path ref={pathRef} fill="none" stroke="#6b3d17" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path ref={path2Ref} fill="none" stroke="rgba(255,232,196,0.5)" strokeWidth="1" strokeLinecap="round" strokeDasharray="5 5" />
+        <circle ref={beadRef} r="6.5" fill="url(#beadGrad)" stroke="rgba(0,0,0,0.35)" strokeWidth="0.5" />
+      </svg>
     </div>
   )
 }
@@ -94,8 +278,29 @@ export default function BookMode({ onClose }) {
   const [spread, setSpread] = useState(0)
   const [flipping, setFlipping] = useState(null)
   const [muted, setMuted] = useState(false)
-  const [showResume, setShowResume] = useState(false)
+  const [doc, setDoc] = useState(null)
+  const [wide, setWide] = useState(() => (typeof window !== 'undefined' ? window.innerWidth >= 720 : true))
+  const [vp, setVp] = useState(() => ({ w: typeof window !== 'undefined' ? window.innerWidth : 1280, h: typeof window !== 'undefined' ? window.innerHeight : 800 }))
+  const [flow, setFlow] = useState(null)
+  const rulerBodyRef = useRef(null)
+  const rulerBlocksRef = useRef(null)
+  const blockRefs = useRef({})
   const timer = useRef(null)
+
+  useEffect(() => () => clearTimeout(timer.current), [])
+
+  useEffect(() => {
+    const onResize = () => {
+      const w = window.innerWidth >= 720
+      setWide((prev) => {
+        if (prev !== w) setSpread(0)
+        return w
+      })
+      setVp({ w: window.innerWidth, h: window.innerHeight })
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   const categories = useMemo(() => [...new Set(techStacks.map((t) => t.category))], [techStacks])
   const month = useMemo(() => {
@@ -142,21 +347,235 @@ export default function BookMode({ onClose }) {
   const referBody = `Hi,\n\nI'd like to refer ${profile.name}${profile.headline ? ` — ${profile.headline}` : ''}.\n\nPortfolio: ${portfolio}\nRésumé: ${profile.links.resume}\nLinkedIn: ${profile.links.linkedin}\n\nThank you!`
   const referHref = `mailto:?subject=${encodeURIComponent(`Referral: ${profile.name}`)}&body=${encodeURIComponent(referBody)}`
 
+  const sections = useMemo(() => {
+    const secs = []
+    const aboutSents = (profile.about || '').split(/(?<=[.!?])\s+/).filter(Boolean)
+    const aboutBlocks = [{
+      key: 'lead',
+      node: (
+        <div>
+          <img src={profile.heroImage} alt="" className="w-20 h-20 object-cover rounded-xl float-right ml-3 mb-2 shadow-md" />
+          <p className="book-body text-sm">{aboutSents.slice(0, 2).join(' ') || profile.about}</p>
+        </div>
+      ),
+    }]
+    aboutSents.slice(2).forEach((s, i) => aboutBlocks.push({ key: 'as' + i, node: <p className="book-body text-sm">{s}</p> }))
+    aboutBlocks.push({
+      key: 'contact',
+      node: (
+        <div className="space-y-1 text-xs text-stone-600 clear-both">
+          {profile.location && <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {profile.location}</p>}
+          {profile.email && <p>✉️ {profile.email}</p>}
+        </div>
+      ),
+    })
+    secs.push({ id: 'about', title: 'About Me', tocLabel: 'About Me', blocks: aboutBlocks })
+
+    if (education?.length) {
+      const eduBlocks = []
+      education.forEach((ed) => {
+        eduBlocks.push({
+          key: 'ed' + ed.id,
+          node: (
+            <div className="border-l-2 border-amber-300 pl-3">
+              <p className="font-bold text-stone-800 text-sm">{ed.institution}</p>
+              <p className="text-xs text-amber-800">{ed.degree}</p>
+              <p className="text-[11px] text-stone-500">{ed.period}</p>
+            </div>
+          ),
+        })
+        if (ed.photos?.length) {
+          eduBlocks.push({
+            key: 'edcap' + ed.id,
+            node: <p className="text-[11px] text-amber-800 font-medium">🎓 Convocation — {ed.institution} · tap any photo to enlarge</p>,
+          })
+          ed.photos.forEach((src, i) => {
+            eduBlocks.push({
+              key: 'edph' + ed.id + '-' + i,
+              node: (
+                <button onClick={() => setDoc({ url: src, title: `${ed.institution} — Convocation` })} className="group block w-full rounded-xl border border-amber-200 shadow overflow-hidden bg-stone-100" title="Tap to enlarge">
+                  <img src={src} alt="Convocation" className="w-full h-56 object-contain transition-transform duration-300 group-hover:scale-[1.02]" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+                </button>
+              ),
+            })
+          })
+        }
+      })
+      secs.push({ id: 'education', title: 'Education', tocLabel: 'Education', blocks: eduBlocks })
+    }
+
+    if (experiences?.length) {
+      const expBlocks = []
+      experiences.forEach((e, ei) => {
+        expBlocks.push({
+          key: 'exp' + e.id + '-head',
+          tocLabel: e.company,
+          node: (
+            <div className={ei > 0 ? 'pt-2.5 border-t border-amber-200/60' : ''}>
+              <p className="font-bold text-stone-800">{e.company}</p>
+              <p className="text-sm text-amber-800">{e.position}</p>
+              <p className="text-xs text-stone-500">{e.duration} · {e.location}</p>
+              {e.description && <p className="book-body text-sm mt-1.5">{e.description}</p>}
+            </div>
+          ),
+        })
+        ;(e.highlights || []).forEach((h, i) => expBlocks.push({
+          key: 'exp' + e.id + '-h' + i,
+          node: (
+            <div className="text-xs text-stone-600 leading-snug flex gap-1.5">
+              <span className="text-amber-600 mt-0.5">◆</span>
+              <span>{h}</span>
+            </div>
+          ),
+        }))
+        if (e.skills?.length) expBlocks.push({ key: 'exp' + e.id + '-sk', node: <div className="pt-0.5"><Skills list={e.skills} /></div> })
+      })
+      secs.push({ id: 'experience', title: 'Experience', tocLabel: 'Experience', blocks: expBlocks })
+    }
+
+    if (projects?.length) {
+      secs.push({
+        id: 'projects', title: 'Projects', tocLabel: 'Projects',
+        blocks: projects.map((pr) => ({
+          key: 'pr' + pr.id, tocLabel: pr.title,
+          node: (
+            <div>
+              <p className="font-bold text-stone-800 text-sm">{pr.title}</p>
+              <p className="text-xs text-amber-800 mb-1">{pr.category}</p>
+              <p className="book-body text-xs leading-snug mb-1">{pr.description}</p>
+              <div><Skills list={pr.technologies} /></div>
+              {(pr.liveUrl || pr.githubUrl) && (
+                <div className="flex gap-3 mt-1.5">
+                  {pr.liveUrl && <a href={pr.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] font-semibold text-amber-800 underline decoration-dotted underline-offset-2 hover:text-amber-900">↗ Live demo</a>}
+                  {pr.githubUrl && <a href={pr.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] font-semibold text-stone-600 underline decoration-dotted underline-offset-2 hover:text-stone-800">Code</a>}
+                </div>
+              )}
+            </div>
+          ),
+        })),
+      })
+    }
+
+    if (categories.length) {
+      secs.push({
+        id: 'skills', title: 'Tech Stack', tocLabel: 'Tech Stack',
+        blocks: categories.map((cat) => ({
+          key: 'sc' + cat, tocLabel: cat,
+          node: (
+            <div>
+              <p className="font-semibold text-amber-800 text-sm">{cat}</p>
+              <p className="text-xs text-stone-600">{techStacks.filter((t) => t.category === cat).map((t) => t.name).join(' · ')}</p>
+            </div>
+          ),
+        })),
+      })
+    }
+
+    if (achievements?.length) {
+      secs.push({
+        id: 'ach', title: 'Achievements', tocLabel: 'Achievements',
+        blocks: achievements.map((a) => {
+          const Icon = getIcon(a.icon)
+          return {
+            key: 'ac' + a.id,
+            node: (
+              <div className="flex gap-2.5">
+                <Icon className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-stone-800 text-sm">{a.title}</p>
+                  <p className="text-xs text-stone-500">{a.issuer} · {a.date}</p>
+                  <p className="book-body text-xs leading-snug">{a.description}</p>
+                </div>
+              </div>
+            ),
+          }
+        }),
+      })
+    }
+    return secs
+  }, [profile, education, experiences, projects, categories, techStacks, achievements])
+
+  const allBlocks = useMemo(() => {
+    const arr = []
+    sections.forEach((sec) => sec.blocks.forEach((b) => arr.push({ id: sec.id + '|' + b.key, node: b.node })))
+    return arr
+  }, [sections])
+
+  const stageW = wide ? Math.min(0.94 * vp.w, 780) : Math.min(0.96 * vp.w, 440)
+  const stageH = Math.min(0.74 * vp.h, 560)
+  const leafW = wide ? stageW / 2 : stageW
+
+  useLayoutEffect(() => {
+    const body = rulerBodyRef.current
+    const blocksEl = rulerBlocksRef.current
+    if (!body || !blocksEl) return
+    const headOffset = blocksEl.getBoundingClientRect().top - body.getBoundingClientRect().top
+    const avail = body.clientHeight - headOffset
+    if (avail <= 20) return
+    const heights = {}
+    for (const id in blockRefs.current) {
+      const el = blockRefs.current[id]
+      if (el) heights[id] = el.offsetHeight
+    }
+    const packed = sections.map((sec) => {
+      let cur = []
+      let used = 0
+      const secPages = []
+      sec.blocks.forEach((b) => {
+        const bh = heights[sec.id + '|' + b.key] || 0
+        const add = bh + (cur.length ? BLOCK_GAP : 0)
+        if (cur.length && used + add > avail) {
+          secPages.push(cur)
+          cur = [b]
+          used = bh
+        } else {
+          cur.push(b)
+          used += add
+        }
+      })
+      if (cur.length) secPages.push(cur)
+      return { sec, secPages }
+    })
+    setFlow({ packed })
+  }, [sections, allBlocks, stageH, leafW])
+
   const pages = useMemo(() => {
-    const p = [{ type: 'cover' }, { type: 'about' }]
-    if (education?.length) p.push({ type: 'education' })
-    experiences.forEach((e) => p.push({ type: 'exp', e }))
-    chunk(projects, 2).forEach((pr) => p.push({ type: 'proj', pr }))
-    chunk(categories, 5).forEach((cs) => p.push({ type: 'skills', cs }))
-    p.push({ type: 'ach' })
+    const p = [{ type: 'cover' }, { type: 'contents' }]
+    const toc = []
+    if (flow) {
+      flow.packed.forEach(({ sec, secPages }) => {
+        const startGi = p.length
+        const pageOfBlock = {}
+        secPages.forEach((blocks, pi) => {
+          const gi = p.length
+          blocks.forEach((b) => { pageOfBlock[b.key] = gi })
+          p.push({ type: 'flow', title: sec.title, cont: pi > 0, blocks })
+        })
+        const sub = []
+        if (sec.id !== 'skills') sec.blocks.forEach((b) => { if (b.tocLabel) sub.push({ label: b.tocLabel, page: pageOfBlock[b.key] }) })
+        toc.push({ label: sec.tocLabel, page: startGi, sub })
+      })
+    }
     p.push({ type: 'resume' })
     p.push({ type: 'back' })
     p.push({ type: 'end' })
     if (p.length % 2 !== 0) p.splice(p.length - 2, 0, { type: 'divider' })
+    toc.push({ label: 'Résumé', page: p.findIndex((x) => x.type === 'resume') })
+    toc.push({ label: 'Contact', page: p.findIndex((x) => x.type === 'back') })
+    const contents = p.find((pg) => pg.type === 'contents')
+    if (contents) contents.toc = toc
     return p
-  }, [experiences, education, projects, categories, achievements])
+  }, [flow])
 
-  const leaves = Math.ceil(pages.length / 2)
+  const leaves = wide ? Math.ceil(pages.length / 2) : pages.length
+
+  const jumpTo = (pi) => {
+    const target = wide ? Math.ceil(pi / 2) : pi
+    if (target === spread) return
+    if (!muted) playFlipSound()
+    setFlipping(null)
+    setSpread(target)
+  }
 
   const turn = (dir) => {
     const target = dir === 'next' ? spread + 1 : spread - 1
@@ -202,8 +621,8 @@ export default function BookMode({ onClose }) {
       return (
         <div className="book-cover h-full grid place-items-center p-8 text-center">
           <div>
-            <span className="text-4xl text-amber-200/70">❦</span>
-            <p className="book-serif italic text-amber-100/80 text-lg mt-5">Code with impact.<br />Build with heart.</p>
+            <span className="text-4xl text-[#c9a347]/70">❦</span>
+            <p className="book-serif italic text-[#efe0c2]/85 text-lg mt-5">Code with impact.<br />Build with heart.</p>
           </div>
         </div>
       )
@@ -211,12 +630,13 @@ export default function BookMode({ onClose }) {
     if (pg.type === 'end') {
       return (
         <div className="book-cover h-full flex flex-col items-center justify-center text-center gap-3 p-8">
-          <p className="book-serif text-amber-200/70 tracking-[0.4em] text-xs uppercase">The End</p>
-          <p className="book-serif text-2xl text-amber-100 italic">Thank you for reading.</p>
-          <div className="w-14 h-px bg-amber-200/40 my-1" />
-          <p className="text-amber-100/75 text-sm">Let's build something great together.</p>
-          <p className="book-signature text-amber-100/90 text-3xl mt-2 -rotate-3">{profile.name}</p>
-          <span className="text-3xl mt-1 text-amber-200/70">✦</span>
+          <CoverCorners />
+          <p className="book-serif text-[#d9b98a]/70 tracking-[0.4em] text-xs uppercase">The End</p>
+          <p className="book-serif text-2xl gold-foil italic">Thank you for reading.</p>
+          <div className="w-14 h-px bg-[#c9a347]/50 my-1" />
+          <p className="text-[#efe0c2]/80 text-sm">Let's build something great together.</p>
+          <p className="book-signature text-[#e6c66a] text-3xl mt-2 -rotate-3">{profile.name}</p>
+          <span className="text-3xl mt-1 text-[#c9a347]/70">✦</span>
         </div>
       )
     }
@@ -224,123 +644,54 @@ export default function BookMode({ onClose }) {
       case 'cover':
         return (
           <div className="book-cover h-full flex flex-col items-center justify-center text-center gap-3 p-7">
-            <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-amber-200/60 shadow-xl">
+            <CoverCorners />
+            <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-[#c9a347]/70 border border-[#3a0f18] shadow-xl">
               <img src={profile.heroImage} alt={profile.name} className="w-full h-full object-cover" />
             </div>
-            <h1 className="book-serif text-2xl font-bold text-amber-100">{profile.name}</h1>
-            <p className="text-amber-200/80 text-[11px] tracking-widest uppercase">{profile.headline}</p>
-            <div className="w-14 h-px bg-amber-200/40 my-1" />
-            <p className="book-serif text-amber-200/70 tracking-[0.3em] text-[11px] uppercase">Portfolio</p>
+            <h1 className="book-serif text-2xl font-bold gold-foil">{profile.name}</h1>
+            <p className="text-[#e8d3a0]/80 text-[11px] tracking-widest uppercase">{profile.headline}</p>
+            <div className="w-14 h-px bg-[#c9a347]/50 my-1" />
+            <p className="book-serif text-[#d9b98a]/70 tracking-[0.3em] text-[11px] uppercase">Portfolio</p>
           </div>
         )
-      case 'about':
+      case 'contents':
         return (
           <Leaf idx={idx}>
-            <h2 className="book-heading">About Me</h2>
-            <img src={profile.heroImage} alt="" className="w-20 h-20 object-cover rounded-xl float-right ml-3 mb-2 shadow-md" />
-            <p className="book-body text-sm">{profile.about}</p>
-            <div className="mt-3 space-y-1 text-xs text-stone-600 clear-both">
-              {profile.location && <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {profile.location}</p>}
-              {profile.email && <p>✉️ {profile.email}</p>}
-            </div>
-          </Leaf>
-        )
-      case 'education': {
-        const gradPhotos = education.find((e) => e.photos?.length)?.photos || []
-        return (
-          <Leaf idx={idx}>
-            <h2 className="book-heading">Education</h2>
-            <div className="space-y-2">
-              {education.map((ed) => (
-                <div key={ed.id} className="border-l-2 border-amber-300 pl-3">
-                  <p className="font-bold text-stone-800 text-sm">{ed.institution}</p>
-                  <p className="text-xs text-amber-800">{ed.degree}</p>
-                  <p className="text-[11px] text-stone-500">{ed.period}</p>
-                </div>
-              ))}
-            </div>
-            {gradPhotos.length > 0 && (
-              <div className="mt-3">
-                <div className="grid grid-cols-2 gap-1.5">
-                  {gradPhotos.map((src, i) => (
-                    <img key={i} src={src} alt="Convocation" className="w-full h-24 object-cover rounded-md border border-amber-200 shadow" loading="lazy" />
-                  ))}
-                </div>
-                <p className="text-[10px] text-center text-stone-500 mt-1">🎓 IIITM Manipur — Convocation</p>
-              </div>
-            )}
-          </Leaf>
-        )
-      }
-      case 'exp': {
-        const e = pg.e
-        return (
-          <Leaf idx={idx}>
-            <h2 className="book-heading">Experience</h2>
-            <p className="font-bold text-stone-800">{e.company}</p>
-            <p className="text-sm text-amber-800">{e.position}</p>
-            <p className="text-xs text-stone-500 mb-2">{e.duration} · {e.location}</p>
-            {e.description && <p className="book-body text-sm mb-2">{e.description}</p>}
-            <ul className="space-y-1.5 mb-2">
-              {(e.highlights || []).map((h, i) => (
-                <li key={i} className="text-xs text-stone-600 leading-snug flex gap-1.5">
-                  <span className="text-amber-600 mt-0.5">◆</span>
-                  <span>{h}</span>
+            <h2 className="book-heading">Contents</h2>
+            <ul className="space-y-1">
+              {(pg.toc || []).map((t) => (
+                <li key={t.label}>
+                  <button onClick={() => jumpTo(t.page)} className="w-full flex items-baseline gap-2 text-left group">
+                    <span className="text-sm font-semibold text-stone-800 group-hover:text-amber-800 transition-colors">{t.label}</span>
+                    <span className="flex-1 border-b border-dotted border-stone-300 self-end mb-1" />
+                    <span className="text-sm text-amber-800 tabular-nums book-pagenum">{t.page + 1}</span>
+                  </button>
+                  {t.sub?.length > 0 && (
+                    <ul className="ml-3.5">
+                      {t.sub.map((s, si) => (
+                        <li key={si}>
+                          <button onClick={() => jumpTo(s.page)} className="w-full flex items-baseline gap-2 text-left group">
+                            <span className="text-[11px] text-stone-600 group-hover:text-amber-800 transition-colors truncate">{s.label}</span>
+                            <span className="flex-1 border-b border-dotted border-stone-200 self-end mb-1" />
+                            <span className="text-[11px] text-stone-500 tabular-nums book-pagenum">{s.page + 1}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
-            <div><Skills list={e.skills} /></div>
           </Leaf>
         )
-      }
-      case 'proj':
+      case 'flow':
         return (
           <Leaf idx={idx}>
-            <h2 className="book-heading">Projects</h2>
-            <div className="space-y-4">
-              {pg.pr.map((pr) => (
-                <div key={pr.id}>
-                  <p className="font-bold text-stone-800 text-sm">{pr.title}</p>
-                  <p className="text-xs text-amber-800 mb-1">{pr.category}</p>
-                  <p className="book-body text-xs leading-snug mb-1">{pr.description}</p>
-                  <div><Skills list={pr.technologies} /></div>
-                </div>
+            <h2 className="book-heading">{pg.title}{pg.cont ? ' (cont.)' : ''}</h2>
+            <div>
+              {pg.blocks.map((b, i) => (
+                <div key={b.key} style={{ marginBottom: i < pg.blocks.length - 1 ? BLOCK_GAP : 0 }}>{b.node}</div>
               ))}
-            </div>
-          </Leaf>
-        )
-      case 'skills':
-        return (
-          <Leaf idx={idx}>
-            <h2 className="book-heading">Tech Stack</h2>
-            <div className="space-y-2.5">
-              {pg.cs.map((cat) => (
-                <div key={cat}>
-                  <p className="font-semibold text-amber-800 text-sm">{cat}</p>
-                  <p className="text-xs text-stone-600">{techStacks.filter((t) => t.category === cat).map((t) => t.name).join(' · ')}</p>
-                </div>
-              ))}
-            </div>
-          </Leaf>
-        )
-      case 'ach':
-        return (
-          <Leaf idx={idx}>
-            <h2 className="book-heading">Achievements</h2>
-            <div className="space-y-3">
-              {achievements.map((a) => {
-                const Icon = getIcon(a.icon)
-                return (
-                  <div key={a.id} className="flex gap-2.5">
-                    <Icon className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-bold text-stone-800 text-sm">{a.title}</p>
-                      <p className="text-xs text-stone-500">{a.issuer} · {a.date}</p>
-                      <p className="book-body text-xs leading-snug">{a.description}</p>
-                    </div>
-                  </div>
-                )
-              })}
             </div>
           </Leaf>
         )
@@ -348,8 +699,8 @@ export default function BookMode({ onClose }) {
         return (
           <div className="h-full flex flex-col p-5">
             <h2 className="book-heading text-center">My Résumé</h2>
-            <button onClick={() => setShowResume(true)} className="relative flex-1 min-h-0 rounded-lg overflow-hidden border border-amber-200 shadow group">
-              <img src="/resume-preview.jpg" alt="Résumé preview" className="w-full h-full object-cover object-top" loading="lazy" />
+            <button onClick={() => setDoc({ url: profile.links.resume, title: 'Résumé' })} className="relative flex-1 min-h-0 rounded-lg overflow-hidden border border-amber-200 shadow group">
+              <img src="/resume-preview.jpg" alt="Résumé preview" className="w-full h-full object-cover object-top" />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 flex items-center justify-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500 text-white text-xs font-semibold shadow group-hover:scale-105 transition-transform">
                   <FileText className="w-3.5 h-3.5" /> Tap to open full résumé
@@ -362,17 +713,18 @@ export default function BookMode({ onClose }) {
       case 'back':
         return (
           <div className="book-cover h-full flex flex-col items-center justify-center text-center gap-2.5 p-7">
-            <h2 className="book-serif text-2xl font-bold text-amber-100">Let's connect</h2>
-            <div className="w-14 h-px bg-amber-200/40 my-1" />
-            <div className="space-y-1 text-amber-100/90 text-sm">
+            <CoverCorners />
+            <h2 className="book-serif text-2xl font-bold gold-foil">Let's connect</h2>
+            <div className="w-14 h-px bg-[#c9a347]/50 my-1" />
+            <div className="space-y-1 text-[#efe0c2]/90 text-sm">
               {socials.map((s) => (
                 <p key={s.id}>{s.name}</p>
               ))}
             </div>
-            <a href={referHref} className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-200/90 text-amber-950 text-sm font-semibold hover:bg-amber-100 transition">
+            <a href={referHref} className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9b04a] text-[#3a1016] text-sm font-semibold hover:bg-[#e6c66a] transition">
               <Mail className="w-4 h-4" /> Refer me by email
             </a>
-            <p className="book-signature text-amber-100/90 text-3xl mt-2 -rotate-3">{profile.name}</p>
+            <p className="book-signature text-[#e6c66a] text-3xl mt-2 -rotate-3">{profile.name}</p>
           </div>
         )
       default:
@@ -382,13 +734,34 @@ export default function BookMode({ onClose }) {
 
   return (
     <div className="fixed inset-0 z-[80] flex flex-col items-center justify-center p-4 overflow-hidden" style={{ background: '#150e08' }}>
+      <div className="absolute opacity-0 pointer-events-none" style={{ left: -99999, top: 0, width: leafW, height: stageH }} aria-hidden>
+        <div className="h-full flex flex-col p-5 sm:p-6">
+          <div ref={rulerBodyRef} className="flex-1 min-h-0 overflow-hidden">
+            <h2 className="book-heading">Ag</h2>
+            <div ref={rulerBlocksRef}>
+              {allBlocks.map((b) => (
+                <div
+                  key={b.id}
+                  ref={(el) => {
+                    if (el) blockRefs.current[b.id] = el
+                    else delete blockRefs.current[b.id]
+                  }}
+                >
+                  {b.node}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="book-pagenum text-[11px] pt-2">— 1 —</div>
+        </div>
+      </div>
       {bgImg && (
         <img
           src={bgImg}
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-25 transition-opacity duration-1000 pointer-events-none"
           style={{ filter: 'blur(2px)' }}
-          onError={(e) => e.currentTarget.remove()}
+          onError={() => setBgImg(null)}
         />
       )}
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 35%, rgba(74,49,32,0.68) 0%, rgba(43,28,18,0.85) 45%, rgba(21,14,8,0.96) 100%)' }} />
@@ -398,12 +771,33 @@ export default function BookMode({ onClose }) {
         </span>
       ))}
 
-      <div className="absolute top-4 right-4 flex gap-2 z-10">
-        <button onClick={() => setMuted((m) => !m)} className="w-10 h-10 grid place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 transition" aria-label={muted ? 'Unmute' : 'Mute'}>
+      <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
+        {profile.showBookDownload && profile.links.bookPdf && (
+          <a
+            href={profile.links.bookPdf}
+            download
+            className="inline-flex items-center gap-1.5 h-11 pl-3 pr-4 rounded-full bg-black/45 backdrop-blur-sm border border-amber-200/40 text-amber-50 hover:bg-black/65 hover:border-amber-200/70 shadow-lg transition font-semibold"
+            aria-label="Download book PDF"
+            title="Download this book as PDF"
+          >
+            <Download className="w-5 h-5" /> <span className="text-sm hidden sm:inline">Book PDF</span>
+          </a>
+        )}
+        <button
+          onClick={() => setMuted((m) => !m)}
+          className="w-11 h-11 grid place-items-center rounded-full bg-black/45 backdrop-blur-sm border border-amber-200/40 text-amber-50 hover:bg-black/65 hover:border-amber-200/70 shadow-lg transition"
+          aria-label={muted ? 'Unmute page-flip sound' : 'Mute page-flip sound'}
+          title={muted ? 'Unmute' : 'Mute'}
+        >
           {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
         </button>
-        <button onClick={onClose} className="w-10 h-10 grid place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 transition" aria-label="Close book">
-          <X className="w-5 h-5" />
+        <button
+          onClick={onClose}
+          className="inline-flex items-center gap-1.5 h-11 pl-3 pr-4 rounded-full bg-black/45 backdrop-blur-sm border border-amber-200/40 text-amber-50 hover:bg-red-500/80 hover:border-red-300/70 shadow-lg transition font-semibold"
+          aria-label="Close book"
+          title="Close book"
+        >
+          <X className="w-5 h-5" /> <span className="text-sm">Close</span>
         </button>
       </div>
 
@@ -415,7 +809,7 @@ export default function BookMode({ onClose }) {
       )}
       <p className="book-serif text-amber-100/50 text-sm mb-4 hidden sm:block italic">A journey through my work — turn the page</p>
 
-      <div style={{ perspective: '2600px', width: 'min(94vw, 780px)', height: 'min(74vh, 560px)', transform: `translateX(${spread === 0 ? '-25%' : spread === leaves ? '25%' : '0%'})`, transition: `transform ${FLIP_MS}ms cubic-bezier(0.4, 0.05, 0.2, 1)` }}>
+      <div style={{ perspective: '2600px', width: wide ? 'min(94vw, 780px)' : 'min(96vw, 440px)', height: 'min(74vh, 560px)', transform: `translateX(${wide ? (spread === 0 ? '-25%' : spread === leaves ? '25%' : '0%') : '0%'})`, transition: `transform ${FLIP_MS}ms cubic-bezier(0.4, 0.05, 0.2, 1)` }}>
         <div
           className="relative w-full h-full cursor-grab active:cursor-grabbing"
           style={{ transformStyle: 'preserve-3d', touchAction: 'pan-y' }}
@@ -426,38 +820,52 @@ export default function BookMode({ onClose }) {
             const turned = i < spread
             const isFlipping = i === flipping
             const z = isFlipping ? 999 : turned ? i : leaves - i
+            const common = {
+              transformStyle: 'preserve-3d',
+              transformOrigin: 'left center',
+              transform: `rotateY(${turned ? -180 : 0}deg)`,
+              transition: `transform ${FLIP_MS}ms ${FLIP_EASE}`,
+              zIndex: z,
+            }
+            if (wide) {
+              return (
+                <div key={i} className="absolute top-0" style={{ left: '50%', width: '50%', height: '100%', ...common }}>
+                  <div className="book-leaf book-page" style={{ backfaceVisibility: 'hidden' }}>
+                    {renderContent(pages[2 * i], 2 * i)}
+                    <span className="book-curl" />
+                  </div>
+                  <div className="book-leaf book-page" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                    {renderContent(pages[2 * i + 1], 2 * i + 1)}
+                    <span className="book-curl book-curl-left" />
+                  </div>
+                </div>
+              )
+            }
             return (
-              <div
-                key={i}
-                className="absolute top-0"
-                style={{
-                  left: '50%',
-                  width: '50%',
-                  height: '100%',
-                  transformStyle: 'preserve-3d',
-                  transformOrigin: 'left center',
-                  transform: `rotateY(${turned ? -180 : 0}deg)`,
-                  transition: `transform ${FLIP_MS}ms cubic-bezier(0.4, 0.05, 0.2, 1)`,
-                  zIndex: z,
-                }}
-              >
-                <div className="book-leaf book-page" style={{ backfaceVisibility: 'hidden' }}>
-                  {renderContent(pages[2 * i], 2 * i)}
-                  <span className="book-curl" />
-                </div>
-                <div className="book-leaf book-page" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                  {renderContent(pages[2 * i + 1], 2 * i + 1)}
-                  <span className="book-curl book-curl-left" />
-                </div>
+              <div key={i} className="book-leaf book-page absolute top-0" style={{ left: 0, width: '100%', height: '100%', backfaceVisibility: 'hidden', ...common }}>
+                {renderContent(pages[i], i)}
+                <span className="book-curl" />
               </div>
             )
           })}
-          <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-6 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.28), transparent)', zIndex: 1000 }} />
-          <div className="book-thread absolute top-6 bottom-6 left-1/2 -translate-x-1/2 pointer-events-none" style={{ zIndex: 1001 }} />
+          {wide && (
+            <>
+              <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-6 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.28), transparent)', zIndex: 1000 }} />
+              <BindingThread key={spread} zIndex={1001} />
+            </>
+          )}
         </div>
       </div>
 
-      <div className="flex items-center gap-4 mt-5">
+      <div className="flex items-center gap-3 sm:gap-4 mt-5">
+        <button
+          onClick={() => jumpTo(0)}
+          className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/10 text-white/90 font-semibold hover:bg-white/20 transition ${spread === 0 ? 'invisible' : ''}`}
+          title="Back to cover"
+          aria-label="Restart from cover"
+        >
+          <RotateCcw className="w-4 h-4" /> <span className="hidden sm:inline">Restart</span>
+        </button>
         <button onClick={() => turn('prev')} className={`inline-flex items-center gap-1 px-5 py-2.5 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 transition ${spread === 0 ? 'invisible' : ''}`}>
           <ChevronLeft className="w-4 h-4" /> Prev
         </button>
@@ -467,7 +875,7 @@ export default function BookMode({ onClose }) {
         </button>
       </div>
 
-      {showResume && <DocViewer url={profile.links.resume} title="Résumé" onClose={() => setShowResume(false)} />}
+      {doc && <DocViewer url={doc.url} title={doc.title} onClose={() => setDoc(null)} />}
     </div>
   )
 }

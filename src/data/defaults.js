@@ -29,10 +29,12 @@ export const defaultProfile = {
   phone: '+91-9060749243',
   location: 'Gurugram, India',
   availableForWork: true,
+  showBookDownload: false,
   heroImage: UserImage,
   links: {
     portfolio: 'https://my-portfolio-nine-mocha-77.vercel.app',
     resume: '/Shreedhar_Anand_Resume.pdf',
+    bookPdf: '/Shreedhar_Anand_Portfolio_Book.pdf',
     github: 'https://github.com/ShreedharDynamicCraft',
     linkedin: 'https://www.linkedin.com/in/shreedhar-anand-23a699214/',
     twitter: 'https://x.com/shreedhar_garg',
@@ -87,7 +89,7 @@ export const defaultExperiences = [
   {
     id: 'altbridge',
     type: 'Internship',
-    company: 'AltBridge (Stealth Startup)',
+    company: 'AltBridge',
     logo: '',
     companyUrl: '',
     position: 'SDE Intern (Project Lead)',
