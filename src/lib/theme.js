@@ -2,7 +2,7 @@ import { istParts } from './greeting'
 
 const DEFAULT = {
   name: 'default',
-  bg: 'linear-gradient(to bottom right, #eff6ff, #eef2ff, #faf5ff)',
+  bg: 'radial-gradient(1100px 620px at 8% -8%, #e0e7ff 0%, transparent 55%), radial-gradient(1000px 680px at 100% 2%, #fbe7ff 0%, transparent 52%), radial-gradient(900px 640px at 50% 108%, #d7e6ff 0%, transparent 55%), linear-gradient(to bottom right, #f6f7ff, #eef1fb, #f8f4ff)',
   banner: null,
 }
 
