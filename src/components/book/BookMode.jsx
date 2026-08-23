@@ -69,7 +69,7 @@ const FLIP_EASE = 'cubic-bezier(0.4, 0.05, 0.2, 1)'
 const BLOCK_GAP = 10
 
 const CORNER = `data:image/svg+xml,${encodeURIComponent(
-  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><g fill='none' stroke='#c9a347' stroke-width='2.4'><path d='M6 66 C6 24 24 6 66 6'/><path d='M16 66 C16 30 30 16 66 16'/></g><g fill='#c9a347'><circle cx='14' cy='14' r='3.4'/><path d='M66 4 l3.2 6.4 -3.2 6.4 -3.2 -6.4 z'/><path d='M4 66 l6.4 3.2 6.4 -3.2 -6.4 -3.2 z'/></g></svg>"
+  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><g fill='none' stroke='#3fb950' stroke-width='2.4'><path d='M6 66 C6 24 24 6 66 6'/><path d='M16 66 C16 30 30 16 66 16'/></g><g fill='#3fb950'><circle cx='14' cy='14' r='3.4'/><path d='M66 4 l3.2 6.4 -3.2 6.4 -3.2 -6.4 z'/><path d='M4 66 l6.4 3.2 6.4 -3.2 -6.4 -3.2 z'/></g></svg>"
 )}`
 
 function CoverCorners() {
@@ -620,9 +620,11 @@ export default function BookMode({ onClose }) {
     if (pg.type === 'divider') {
       return (
         <div className="book-cover h-full grid place-items-center p-8 text-center">
-          <div>
-            <span className="text-4xl text-[#c9a347]/70">❦</span>
-            <p className="book-serif italic text-[#efe0c2]/85 text-lg mt-5">Code with impact.<br />Build with heart.</p>
+          <div className="book-mono">
+            <span className="text-3xl text-[#3fb950]/80">{'{ }'}</span>
+            <p className="text-slate-300/85 text-base mt-5 leading-relaxed">
+              <span className="text-slate-500">/*</span> Code with impact.<br />Build with heart. <span className="text-slate-500">*/</span>
+            </p>
           </div>
         </div>
       )
@@ -631,27 +633,33 @@ export default function BookMode({ onClose }) {
       return (
         <div className="book-cover h-full flex flex-col items-center justify-center text-center gap-3 p-8">
           <CoverCorners />
-          <p className="book-serif text-[#d9b98a]/70 tracking-[0.4em] text-xs uppercase">The End</p>
-          <p className="book-serif text-2xl gold-foil italic">Thank you for reading.</p>
-          <div className="w-14 h-px bg-[#c9a347]/50 my-1" />
-          <p className="text-[#efe0c2]/80 text-sm">Let's build something great together.</p>
-          <p className="book-signature text-[#e6c66a] text-3xl mt-2 -rotate-3">{profile.name}</p>
-          <span className="text-3xl mt-1 text-[#c9a347]/70">✦</span>
+          <p className="book-mono text-slate-400/70 tracking-[0.3em] text-xs">// EOF</p>
+          <p className="book-mono text-2xl code-foil">Thanks for reading.</p>
+          <div className="w-14 h-px bg-[#3fb950]/50 my-1" />
+          <p className="book-mono text-slate-300/85 text-sm">
+            <span className="text-[#ff7b72]">return</span> &lt;<span className="text-[#79c0ff]">LetsBuild</span> /&gt;
+          </p>
+          <p className="book-signature text-[#7ee787] text-3xl mt-2 -rotate-3">{profile.name}</p>
+          <span className="book-mono text-2xl mt-1 text-[#3fb950]/70">{'</>'}</span>
         </div>
       )
     }
     switch (pg.type) {
       case 'cover':
         return (
-          <div className="book-cover h-full flex flex-col items-center justify-center text-center gap-3 p-7">
-            <CoverCorners />
-            <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-[#c9a347]/70 border border-[#3a0f18] shadow-xl">
-              <img src={profile.heroImage} alt={profile.name} className="w-full h-full object-cover" />
+          <div className="book-cover h-full flex flex-col overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 shrink-0">
+              <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+              <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+              <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
             </div>
-            <h1 className="book-serif text-2xl font-bold gold-foil">{profile.name}</h1>
-            <p className="text-[#e8d3a0]/80 text-[11px] tracking-widest uppercase">{profile.headline}</p>
-            <div className="w-14 h-px bg-[#c9a347]/50 my-1" />
-            <p className="book-serif text-[#d9b98a]/70 tracking-[0.3em] text-[11px] uppercase">Portfolio</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-center gap-3 px-6">
+              <div className="w-20 h-20 rounded-2xl overflow-hidden ring-1 ring-[#3fb950]/50 shadow-[0_0_26px_rgba(63,185,80,0.28)]">
+                <img src={profile.heroImage} alt={profile.name} className="w-full h-full object-cover" />
+              </div>
+              <h1 className="book-mono text-2xl font-bold code-foil">{profile.name}</h1>
+              <p className="book-mono text-[#58a6ff]/90 text-[11px] tracking-wide">// {profile.headline}</p>
+            </div>
           </div>
         )
       case 'contents':
@@ -714,17 +722,17 @@ export default function BookMode({ onClose }) {
         return (
           <div className="book-cover h-full flex flex-col items-center justify-center text-center gap-2.5 p-7">
             <CoverCorners />
-            <h2 className="book-serif text-2xl font-bold gold-foil">Let's connect</h2>
-            <div className="w-14 h-px bg-[#c9a347]/50 my-1" />
-            <div className="space-y-1 text-[#efe0c2]/90 text-sm">
+            <h2 className="book-mono text-2xl font-bold code-foil">$ connect</h2>
+            <div className="w-14 h-px bg-[#3fb950]/50 my-1" />
+            <div className="space-y-1 book-mono text-slate-300/90 text-sm">
               {socials.map((s) => (
-                <p key={s.id}>{s.name}</p>
+                <p key={s.id}><span className="text-slate-500">→</span> {s.name}</p>
               ))}
             </div>
-            <a href={referHref} className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#d9b04a] text-[#3a1016] text-sm font-semibold hover:bg-[#e6c66a] transition">
+            <a href={referHref} className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3fb950] text-[#0d1117] text-sm font-semibold hover:bg-[#56d364] transition book-mono">
               <Mail className="w-4 h-4" /> Refer me by email
             </a>
-            <p className="book-signature text-[#e6c66a] text-3xl mt-2 -rotate-3">{profile.name}</p>
+            <p className="book-signature text-[#7ee787] text-3xl mt-2 -rotate-3">{profile.name}</p>
           </div>
         )
       default:

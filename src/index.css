@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 /*
@@ -128,33 +130,53 @@ body {
 }
 .book-cover {
   position: relative;
-  background-color: #4a1521;
+  background-color: #0d1117;
   background-image:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.07) 0%, transparent 42%),
-    radial-gradient(125% 120% at 28% 18%, #74263a 0%, #521a28 48%, #360d18 100%),
-    repeating-linear-gradient(96deg, rgba(0, 0, 0, 0.05) 0 3px, transparent 3px 7px),
-    repeating-linear-gradient(4deg, rgba(0, 0, 0, 0.04) 0 3px, transparent 3px 9px);
-  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.55), inset 0 2px 1px rgba(255, 255, 255, 0.06);
+    radial-gradient(130% 120% at 26% 14%, #1b2233 0%, #131a27 46%, #0a0e16 100%),
+    linear-gradient(rgba(63, 185, 80, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 185, 80, 0.05) 1px, transparent 1px);
+  background-size: auto, 26px 26px, 26px 26px;
+  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 .book-cover::before {
   content: '';
   position: absolute;
   inset: 14px;
-  border: 1.4px solid rgba(202, 163, 71, 0.6);
-  border-radius: 3px;
-  box-shadow: inset 0 0 0 1px rgba(202, 163, 71, 0.16), 0 0 14px rgba(202, 163, 71, 0.08);
+  border: 1.2px solid rgba(63, 185, 80, 0.42);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(63, 185, 80, 0.1), 0 0 22px rgba(63, 185, 80, 0.12);
   pointer-events: none;
 }
 .book-cover::after {
   content: '';
   position: absolute;
   inset: 17px;
-  border: 0.5px solid rgba(202, 163, 71, 0.38);
-  border-radius: 2px;
+  border: 0.5px solid rgba(88, 166, 255, 0.22);
+  border-radius: 6px;
   pointer-events: none;
 }
 .book-serif {
   font-family: Georgia, 'Times New Roman', serif;
+}
+.book-mono {
+  font-family: 'Fira Code', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-feature-settings: 'calt' 1, 'liga' 1;
+  letter-spacing: -0.01em;
+}
+.cursor-blink {
+  animation: cursorBlink 1.1s steps(1) infinite;
+  color: #3fb950;
+}
+@keyframes cursorBlink {
+  50% { opacity: 0; }
+}
+.code-foil {
+  background: linear-gradient(180deg, #7ee787 0%, #3fb950 52%, #2ea043 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: 0 0 18px rgba(63, 185, 80, 0.35);
 }
 .gold-foil {
   background: linear-gradient(180deg, #f6e6a8 0%, #d9b04a 38%, #b8860b 55%, #f0d98a 100%);
