@@ -11,7 +11,7 @@ import {
 
 const STORAGE_KEY = 'portfolio.data.v1'
 
-const DEFAULT_PW_HASH = '2d8xy2g0qxn'
+const DEFAULT_PW_HASH = '22et8ht7y6a'
 
 function cyrb53(str, seed = 0) {
   let h1 = 0xdeadbeef ^ seed
